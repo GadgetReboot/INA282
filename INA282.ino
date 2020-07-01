@@ -10,19 +10,10 @@ const byte     inputPin = A0;                     // sensor input
 const byte         gain = 50;                     // INA282 gain = 50 V/V
 const float      rSense = 0.1;                    // sense resistor 0.1r
 const float sensitivity = rSense * 0.001 * gain;  // sensor output V/mA  = 1mA * 0.1r * 50 = 0.005 V/mA
-int              offset = 0;                      // ADC zero current offset adjust
 
 
 void setup() {
   Serial.begin(9600);
-
-  // assuming no sensor current during power up
-  // take an average reading to determine if there is an offset
-  // and subtract from future current readings
-  for (int i = 0; i < 100; i++) {
-    offset =  offset + analogRead(inputPin);
-  }
-  offset = offset / 100;
 }
 
 
@@ -50,7 +41,7 @@ int32_t measureCurrent() {
     sensorValue =  sensorValue + analogRead(inputPin);
     Vcc = Vcc + readVcc();
   }
-  sensorValue = (sensorValue / 100) - offset;
+  sensorValue = (sensorValue / 100);
   Vcc = Vcc / 100;
 
   // truncate the float variable
